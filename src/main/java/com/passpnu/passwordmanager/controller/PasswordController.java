@@ -1,23 +1,40 @@
 package com.passpnu.passwordmanager.controller;
 
 import com.passpnu.passwordmanager.entity.Password;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.passpnu.passwordmanager.entity.User;
+import com.passpnu.passwordmanager.repos.UserRepository;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Random;
-import java.util.stream.IntStream;
 
 @RestController
 @RequestMapping("/password")
 public class PasswordController {
-    @GetMapping
-    public static Password getPass(){
-        return new Password(1L, 1L, "Pass", 1L);
+    private final UserRepository userRepository;
+
+    public PasswordController(UserRepository repository) {
+        this.userRepository = repository;
     }
 
+    @GetMapping
+    public static Password getPass(){
+        return Password.builder().user(null).password("1234").service(null).id(1L).build();
+    }
+
+//    @GetMapping("/test")
+//    public User SaveTest(){
+//        User user = User.builder().name("Max").password("1234").encryptionKey("12345").build();
+//        return this.userRepository.save(user);
+//    }
+
+    @PostMapping("/user")
+    public User saveUser(@RequestBody User user){
+        return this.userRepository.save(user);
+    }
+
+
     @GetMapping("/generate")
-    public static String generatePassword(){
+    public String generatePassword(){
         Random random = new Random();
         int length = 10;
         int asciiCode;

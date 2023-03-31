@@ -1,6 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<beans xmlns="http://www.springframework.org/schema/beans"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
 
-</beans>
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL9Dialect</property>
+        <property name="connection.driver_class">org.postgresql.Driver</property>
+        <property name="hibernate.connection.username">postgres</property>
+        <property name="hibernate.connection.password">postgres</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/password_manager</property>
+
+        <property name="connection.pool_size">5</property>
+        <property name="hibernate.show_sql">false</property>
+        <property name="hbm2ddl.auto">update</property>
+
+        <mapping class="com.passpnu.passwordmanager.entity.Password"/>
+        <mapping class="com.passpnu.passwordmanager.entity.User"/>
+        <mapping class="com.passpnu.passwordmanager.entity.Service"/>
+    </session-factory>
+</hibernate-configuration>
