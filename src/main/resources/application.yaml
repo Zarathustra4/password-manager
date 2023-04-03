@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    username: ${db_username}
+    url: ${db_url}
+    password: ${db_password}
+  sql:
+    init:
+      mode: always
+  jpa:
+    show-sql: true
+  flyway:
+    user: ${db_username}
+    password: ${db_password}
+    schemas: public
+    locations: db/migration
+    baselineOnMigrate: true

@@ -1,41 +1,25 @@
 package com.passpnu.passwordmanager.controller;
 
-import com.passpnu.passwordmanager.entity.Password;
-import com.passpnu.passwordmanager.entity.User;
+import com.passpnu.passwordmanager.entity.PasswordEntity;
+import com.passpnu.passwordmanager.entity.ServiceEntity;
+import com.passpnu.passwordmanager.entity.UserEntity;
+import com.passpnu.passwordmanager.repos.PasswordRepository;
+import com.passpnu.passwordmanager.repos.ServiceRepository;
 import com.passpnu.passwordmanager.repos.UserRepository;
+import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Random;
+import java.security.SecureRandom;
 
 @RestController
-@RequestMapping("/password")
+@RequestMapping("/passwords")
+@AllArgsConstructor
 public class PasswordController {
-    private final UserRepository userRepository;
-
-    public PasswordController(UserRepository repository) {
-        this.userRepository = repository;
-    }
-
-    @GetMapping
-    public static Password getPass(){
-        return Password.builder().user(null).password("1234").service(null).id(1L).build();
-    }
-
-//    @GetMapping("/test")
-//    public User SaveTest(){
-//        User user = User.builder().name("Max").password("1234").encryptionKey("12345").build();
-//        return this.userRepository.save(user);
-//    }
-
-    @PostMapping("/user")
-    public User saveUser(@RequestBody User user){
-        return this.userRepository.save(user);
-    }
-
+    
 
     @GetMapping("/generate")
     public String generatePassword(){
-        Random random = new Random();
+        SecureRandom random = new SecureRandom();
         int length = 10;
         int asciiCode;
         StringBuilder password = new StringBuilder();
