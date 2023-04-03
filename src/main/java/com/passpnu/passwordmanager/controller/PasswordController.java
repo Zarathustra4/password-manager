@@ -1,11 +1,5 @@
 package com.passpnu.passwordmanager.controller;
 
-import com.passpnu.passwordmanager.entity.PasswordEntity;
-import com.passpnu.passwordmanager.entity.ServiceEntity;
-import com.passpnu.passwordmanager.entity.UserEntity;
-import com.passpnu.passwordmanager.repos.PasswordRepository;
-import com.passpnu.passwordmanager.repos.ServiceRepository;
-import com.passpnu.passwordmanager.repos.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,7 +9,7 @@ import java.security.SecureRandom;
 @RequestMapping("/passwords")
 @AllArgsConstructor
 public class PasswordController {
-    
+
 
     @GetMapping("/generate")
     public String generatePassword(){
