@@ -1,16 +1,16 @@
 spring:
   datasource:
-    username: ${db_username}
-    url: ${db_url}
-    password: ${db_password}
+    username: ${DB_USERNAME:POSTGRES}
+    url: ${DB_URL:POSTGRES}
+    password: ${DB_PASSWORD:POSTGRES}
   sql:
     init:
       mode: always
   jpa:
     show-sql: true
   flyway:
-    user: ${db_username}
-    password: ${db_password}
+    user: ${DB_USERNAME:POSTGRES}
+    password: ${DB_PASSWORD:POSTGRES}
     schemas: public
     locations: db/migration
     baselineOnMigrate: true
