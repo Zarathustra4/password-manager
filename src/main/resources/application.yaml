@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    username: ${DB_USERNAME:POSTGRES}
+    url: ${DB_URL:POSTGRES}
+    password: ${DB_PASSWORD:POSTGRES}
+  sql:
+    init:
+      mode: always
+  jpa:
+    show-sql: true
+  flyway:
+    user: ${DB_USERNAME:POSTGRES}
+    password: ${DB_PASSWORD:POSTGRES}
+    schemas: public
+    locations: db/migration
+    baselineOnMigrate: true
