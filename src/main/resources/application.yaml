@@ -14,3 +14,6 @@ spring:
     schemas: public
     locations: db/migration
     baselineOnMigrate: true
+  security:
+    user:
+      password: "user"
