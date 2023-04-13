@@ -16,4 +16,4 @@ spring:
     baselineOnMigrate: true
   security:
     user:
-      password: "user"
+      password: ${USER_PASSWORD:user}

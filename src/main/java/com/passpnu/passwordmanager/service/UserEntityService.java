@@ -1,6 +1,6 @@
 package com.passpnu.passwordmanager.service;
 
-import com.passpnu.passwordmanager.Dto.UserDto;
+import com.passpnu.passwordmanager.dto.UserDto;
 import com.passpnu.passwordmanager.entity.UserEntity;
 
 

@@ -1,6 +1,6 @@
 package com.passpnu.passwordmanager.controller;
 
-import com.passpnu.passwordmanager.Dto.UserDto;
+import com.passpnu.passwordmanager.dto.UserDto;
 import com.passpnu.passwordmanager.service.UserEntityServiceImpl;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -14,12 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 
-
 @RestController
 @AllArgsConstructor
 public class UserController {
     private final UserEntityServiceImpl userEntityService;
     private final AuthenticationManager authenticationManager;
+
 
     @PostMapping("/sign-up")
     public ResponseEntity<String> signUp(@RequestBody UserDto signUpUser){

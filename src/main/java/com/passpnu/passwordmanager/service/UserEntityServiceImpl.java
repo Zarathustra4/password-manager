@@ -1,6 +1,6 @@
 package com.passpnu.passwordmanager.service;
 
-import com.passpnu.passwordmanager.Dto.UserDto;
+import com.passpnu.passwordmanager.dto.UserDto;
 import com.passpnu.passwordmanager.entity.UserEntity;
 import com.passpnu.passwordmanager.repos.UserRepository;
 import lombok.AllArgsConstructor;
@@ -29,15 +29,9 @@ public class UserEntityServiceImpl implements UserEntityService, UserDetailsServ
     }
 
 
-
     @Override
     public Boolean existsByUsername(String username){
-        for(UserEntity userEntity : userRepository.findAll()){
-            if(userEntity.getUsername().equals(username)){
-                return true;
-            }
-        }
-        return false;
+        return userRepository.existsByUsername(username);
     }
 
     @Override
