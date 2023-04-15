@@ -1,8 +1,9 @@
 package com.passpnu.passwordmanager.controller;
 
 import com.passpnu.passwordmanager.dto.UserDto;
-import com.passpnu.passwordmanager.service.UserEntityServiceImpl;
-import lombok.AllArgsConstructor;
+import com.passpnu.passwordmanager.service.UserEntityService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,10 +16,16 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@AllArgsConstructor
 public class UserController {
-    private final UserEntityServiceImpl userEntityService;
+    private final UserEntityService userEntityService;
+
     private final AuthenticationManager authenticationManager;
+
+    public UserController(@Qualifier("userService") UserEntityService userEntityService,
+                          @Qualifier("authManager") AuthenticationManager authenticationManager) {
+        this.userEntityService = userEntityService;
+        this.authenticationManager = authenticationManager;
+    }
 
 
     @PostMapping("/sign-up")
