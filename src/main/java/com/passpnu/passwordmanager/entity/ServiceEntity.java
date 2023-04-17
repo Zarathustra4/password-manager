@@ -17,7 +17,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-@Table
+@Table(name="service")
 public class ServiceEntity {
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
