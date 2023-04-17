@@ -1,4 +1,5 @@
 package com.passpnu.passwordmanager.entity;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
 import jakarta.persistence.Id;
@@ -6,7 +7,6 @@ import jakarta.persistence.GeneratedValue;
 
 
 import jakarta.persistence.GenerationType;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
 import lombok.Builder;
@@ -14,6 +14,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.Collections;
 
 @Entity
 @Builder
@@ -22,19 +28,49 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name="\"user\"")
-public class UserEntity {
+public class UserEntity implements UserDetails {
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
 
-    @NotBlank
+    @Column(nullable = false, unique = true)
     private String username;
-    @Size(min = 4, max = 16)
+
+    @Size(min = 4)
+    @Column(nullable = false)
     private String password;
-    @NotBlank
+
+    @Size(min = 8, max = 24)
+    @Column(nullable = false)
     private String encryptionKey;
-    //@NotBlank
+
+    @Column(nullable = false)
     private Role role;
 
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.singleton(new SimpleGrantedAuthority(role.name()));
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
 }

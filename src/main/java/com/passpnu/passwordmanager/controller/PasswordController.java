@@ -11,14 +11,13 @@ import java.security.SecureRandom;
 @RequestMapping("/passwords")
 public class PasswordController {
 
-
     @GetMapping("/generate")
     public String generatePassword(){
         SecureRandom random = new SecureRandom();
-        int length = 10;
+        int length = random.nextInt(14) + 8;
         int asciiCode;
         StringBuilder password = new StringBuilder();
-        for(int i = 0; i < 10; i++){
+        for(int i = 0; i < length; i++){
             asciiCode = random.nextInt(126) + 33;
             password.append((char) asciiCode);
         }
