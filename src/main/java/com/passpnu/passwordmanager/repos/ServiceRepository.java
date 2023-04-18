@@ -12,6 +12,4 @@ public interface ServiceRepository extends JpaRepository<ServiceEntity, Long> {
     boolean existsByDomain(@Param("domain") String domain);
 
     Optional<ServiceEntity> findByDomain(String domain);
-
-    Optional<ServiceEntity> findById(long id);
 }
