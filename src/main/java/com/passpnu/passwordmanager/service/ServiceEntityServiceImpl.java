@@ -55,6 +55,7 @@ public class ServiceEntityServiceImpl implements ServiceEntityService{
         );
     }
 
+    
     @Override
     public ServiceDto putService(ServiceDto service) throws NameNotFoundException {
         Optional<ServiceEntity> serviceOptional = serviceRepository.findByDomain(
