@@ -15,9 +15,8 @@ import java.util.Optional;
 @Service
 @AllArgsConstructor
 public class ServiceEntityServiceImpl implements ServiceEntityService{
-    ServiceRepository serviceRepository;
-    ServiceMapper serviceMapper;
-
+    private final ServiceRepository serviceRepository;
+    private final ServiceMapper serviceMapper;
 
     @Override
     public List<ServiceDto> getServiceList() {

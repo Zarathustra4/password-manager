@@ -13,12 +13,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+
+
 @AllArgsConstructor
 @RestController
 public class UserController {
     private final UserEntityService userEntityService;
     private final AuthenticationManager authenticationManager;
-
 
     @PostMapping("/sign-up")
     public ResponseEntity<String> signUp(@RequestBody UserDto signUpUser){
@@ -41,5 +42,4 @@ public class UserController {
         SecurityContextHolder.getContext().setAuthentication(authentication);
         return new ResponseEntity<>("User logged in successfully!", HttpStatus.OK);
     }
-
 }
