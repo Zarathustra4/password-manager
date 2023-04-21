@@ -2,6 +2,7 @@ package com.passpnu.passwordmanager.service;
 
 import com.passpnu.passwordmanager.dto.ServiceDto;
 import com.passpnu.passwordmanager.entity.ServiceEntity;
+import com.passpnu.passwordmanager.mapper.ServiceMapper;
 import com.passpnu.passwordmanager.repos.ServiceRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,24 +16,8 @@ import java.util.Optional;
 @AllArgsConstructor
 public class ServiceEntityServiceImpl implements ServiceEntityService{
     ServiceRepository serviceRepository;
+    ServiceMapper serviceMapper;
 
-    private ServiceEntity dtoToEntity(ServiceDto serviceDto){
-        return ServiceEntity.builder()
-                .title(serviceDto.getTitle())
-                .logoPath(serviceDto.getLogoPath())
-                .domain(serviceDto.getDomain())
-                .description(serviceDto.getDescription())
-                .build();
-    }
-
-    private ServiceDto entityToDto(ServiceEntity serviceEntity){
-        return ServiceDto.builder()
-                .title(serviceEntity.getTitle())
-                .logoPath(serviceEntity.getLogoPath())
-                .domain(serviceEntity.getDomain())
-                .description(serviceEntity.getDescription())
-                .build();
-    }
 
     @Override
     public List<ServiceDto> getServiceList() {
@@ -40,7 +25,7 @@ public class ServiceEntityServiceImpl implements ServiceEntityService{
         List<ServiceDto> serviceDtoList = new ArrayList<>();
         for(ServiceEntity serviceEntity : serviceEntities){
             serviceDtoList.add(
-                    entityToDto(serviceEntity)
+                    serviceMapper.entityToDto(serviceEntity)
             );
         }
         return serviceDtoList;
@@ -48,24 +33,22 @@ public class ServiceEntityServiceImpl implements ServiceEntityService{
 
     @Override
     public ServiceDto postService(ServiceDto service){
-        ServiceEntity serviceEntity = dtoToEntity(service);
+        ServiceEntity serviceEntity = serviceMapper.dtoToEntity(service);
 
-        return entityToDto(
+        return serviceMapper.entityToDto(
                 serviceRepository.save(serviceEntity)
         );
     }
 
     @Override
     public ServiceDto putService(ServiceDto service) throws NameNotFoundException {
-        Optional<ServiceEntity> serviceOptional = serviceRepository.findByDomain(
+        ServiceEntity serviceEntity = serviceRepository.findByDomain(
                 service.getDomain()
         );
 
-        if(serviceOptional.isEmpty()){
+        if(serviceEntity == null){
             throw new NameNotFoundException("The service is not found");
         }
-
-        ServiceEntity serviceEntity = serviceOptional.get();
 
         serviceEntity.setDescription(service.getDescription());
         serviceEntity.setLogoPath(service.getLogoPath());
@@ -74,7 +57,7 @@ public class ServiceEntityServiceImpl implements ServiceEntityService{
 
         serviceRepository.save(serviceEntity);
 
-        return entityToDto(serviceEntity);
+        return serviceMapper.entityToDto(serviceEntity);
     }
 
     @Override
@@ -85,7 +68,7 @@ public class ServiceEntityServiceImpl implements ServiceEntityService{
             throw new NameNotFoundException("The service does not exist");
         }
 
-        return entityToDto(serviceEntityOptional.get());
+        return serviceMapper.entityToDto(serviceEntityOptional.get());
     }
 
     @Override
