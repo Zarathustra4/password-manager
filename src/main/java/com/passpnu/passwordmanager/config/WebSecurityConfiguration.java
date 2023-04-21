@@ -12,16 +12,17 @@ import org.springframework.security.authentication.AuthenticationManager;
 
 @Configuration
 @EnableWebSecurity
-public class WebSecurityConfiguration {
+public class WebSecurityConfiguration{
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        //Now I allow to use every endpoint without authentication to test my own code. Later I will fix it!!!
         http.csrf().disable().authorizeHttpRequests(
-                requests -> requests.anyRequest().permitAll()
+                (requests) -> requests.requestMatchers("/log-in", "/sign-up", "/passwords/generate").permitAll()
         );
         return http.build();
     }
+
+
     
     @Bean
     public AuthenticationManager authenticationManager(
@@ -33,5 +34,4 @@ public class WebSecurityConfiguration {
     public static PasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
-
 }

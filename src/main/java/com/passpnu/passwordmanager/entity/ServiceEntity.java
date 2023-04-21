@@ -8,7 +8,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -18,7 +17,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @Getter
 @Setter
-@Builder
 @Table(name="service")
 public class ServiceEntity {
     @Id
@@ -27,7 +25,6 @@ public class ServiceEntity {
 
     @Column(nullable = false)
     private String title;
-
     @Column(nullable = false, unique = true)
     private String domain;
 
