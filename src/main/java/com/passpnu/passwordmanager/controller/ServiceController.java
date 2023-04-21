@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.naming.NameNotFoundException;
 import java.util.List;
-import java.util.Optional;
+
 
 @RestController
 @RequestMapping("/services")
@@ -34,9 +34,9 @@ public class ServiceController {
             return new ResponseEntity<>("There are not such a service", HttpStatus.BAD_REQUEST);
         }
 
-        Optional<ServiceDto> serviceDto = Optional.ofNullable(serviceEntityService.putService(service));
+        ServiceDto serviceDto = serviceEntityService.putService(service);
 
-        if(serviceDto.isPresent()){
+        if(serviceDto != null){
             return new ResponseEntity<>("Service is successfully updated", HttpStatus.OK);
         }
 
