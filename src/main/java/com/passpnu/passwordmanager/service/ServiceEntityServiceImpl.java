@@ -36,7 +36,7 @@ public class ServiceEntityServiceImpl implements ServiceEntityService{
     }
 
     @Override
-    public ServiceDto putService(ServiceDto service) throws NameNotFoundException {
+    public ServiceDto putService(ServiceDto service){
         String domain = service.getDomain();
         ServiceEntity serviceEntity = Objects.requireNonNull(
                 serviceRepository.findByDomain(domain),
