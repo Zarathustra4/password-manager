@@ -14,10 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 
-
 @AllArgsConstructor
 @RestController
-public class UserController {
+public class AuthController {
     private final UserEntityService userEntityService;
     private final AuthenticationManager authenticationManager;
 
@@ -34,7 +33,8 @@ public class UserController {
 
     @PostMapping("/log-in")
     public ResponseEntity<String> logIn(@RequestBody UserDto logInUser){
-
+        //TODO Move it to filter
+        //TODO it by JWT token
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         logInUser.getUsername(), logInUser.getPassword()));

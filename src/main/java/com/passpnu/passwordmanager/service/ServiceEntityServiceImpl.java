@@ -8,10 +8,10 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import javax.naming.NameNotFoundException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
 
 @Service
 @AllArgsConstructor
@@ -22,11 +22,10 @@ public class ServiceEntityServiceImpl implements ServiceEntityService{
     @Override
     public List<ServiceDto> getServiceList() {
         List<ServiceEntity> serviceEntities = serviceRepository.findAll();
-        List<ServiceDto> serviceDtoList = new ArrayList<>();
-        for(ServiceEntity serviceEntity : serviceEntities){
-            serviceDtoList.add(serviceMapper.entityToDto(serviceEntity));
-        }
-        return serviceDtoList;
+
+        return serviceEntities.stream()
+                .map(serviceMapper::entityToDto)
+                .toList();
     }
 
     @Override
