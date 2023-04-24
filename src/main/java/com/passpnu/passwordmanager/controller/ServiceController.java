@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("/services")
 @AllArgsConstructor
 public class ServiceController {
-    private ServiceEntityService serviceEntityService;
+    private final ServiceEntityService serviceEntityService;
 
     @GetMapping
     public List<ServiceDto> getServiceList(){
@@ -30,9 +30,7 @@ public class ServiceController {
 
     @PutMapping
     public ResponseEntity<String> editService(@RequestBody ServiceDto service) throws NameNotFoundException {
-        if( !serviceEntityService.existsByDomain(service) ){
-            return new ResponseEntity<>("There are not such a service", HttpStatus.BAD_REQUEST);
-        }
+        //The existence check was redundant because it is already present in the service method
 
         ServiceDto serviceDto = serviceEntityService.putService(service);
 
