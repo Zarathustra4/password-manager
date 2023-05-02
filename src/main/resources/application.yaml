@@ -17,3 +17,4 @@ spring:
   security:
     user:
       password: ${USER_PASSWORD:user}
+jwt.secret: secretKey

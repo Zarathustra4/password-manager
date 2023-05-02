@@ -1,15 +1,12 @@
 package com.passpnu.passwordmanager.controller;
 
-import com.passpnu.passwordmanager.dto.AuthRequestDto;
-import com.passpnu.passwordmanager.dto.AuthResponseDto;
 import com.passpnu.passwordmanager.dto.UserDto;
-import com.passpnu.passwordmanager.jwt.JwtUtil;
 import com.passpnu.passwordmanager.service.UserEntityService;
+import com.passpnu.passwordmanager.util.JwtUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,13 +17,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 
-
 @AllArgsConstructor
 @RestController
 public class AuthController {
     private final UserEntityService userEntityService;
-    private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
+    private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
 
     @PostMapping("/sign-up")
@@ -41,22 +37,22 @@ public class AuthController {
     }
 
     @PostMapping("/log-in")
-    public AuthResponseDto logIn(@RequestBody AuthRequestDto authRequest){
+    public ResponseEntity<String> logIn(@RequestBody UserDto logInUser){
 
-        try {
-            authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(authRequest.getUsername(), authRequest.getPassword())
-            );
-        } catch (BadCredentialsException e) {
-            throw new RuntimeException("Incorrect password or username!", e);
-        }
+        Authentication authentication = authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                        logInUser.getUsername(), logInUser.getPassword())
+        );
 
-        final UserDetails user = userDetailsService.loadUserByUsername(authRequest.getUsername());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        //String jwt = jwtUtil.generateToken(user);
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(logInUser.getUsername());
 
-        String jwt = "token";
+        String jwt = jwtUtil.generateToken(userDetails);
 
-        return AuthResponseDto.builder().token(jwt).build();
+        return new ResponseEntity<>(jwt, HttpStatus.OK);
     }
+
+
+
 }
