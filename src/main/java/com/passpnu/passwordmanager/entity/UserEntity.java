@@ -28,7 +28,7 @@ import java.util.Collections;
 @Getter
 @Setter
 @Table(name="\"user\"")
-public class UserEntity implements UserDetails {
+public class UserEntity implements UserDetails{
 
     @Id
     @GeneratedValue(strategy= GenerationType.AUTO)
