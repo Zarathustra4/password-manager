@@ -53,10 +53,13 @@ public class ServiceEntityServiceImpl implements ServiceEntityService{
     @Override
     public ServiceDto getById(String id) throws NameNotFoundException{
         Long longId = Long.parseLong(id);
+
         Optional<ServiceEntity> serviceEntity = serviceRepository.findById(longId);
+
         if(serviceEntity.isEmpty()){
             throw new NameNotFoundException("The service does not exist");
         }
+
         return serviceMapper.entityToDto(serviceEntity.get());
     }
 

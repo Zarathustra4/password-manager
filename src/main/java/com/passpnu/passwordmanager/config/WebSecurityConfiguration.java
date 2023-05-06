@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,7 +24,6 @@ public class WebSecurityConfiguration {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-        //Now I allow to use every endpoint without authentication to test my own code. Later I will fix it!!!
         http
                 .csrf().disable()
                 .sessionManagement()
@@ -41,7 +41,10 @@ public class WebSecurityConfiguration {
 
                 .and()
                 .authorizeHttpRequests(
-                    requests -> requests.anyRequest().permitAll()
+                    requests -> requests
+                            .requestMatchers(HttpMethod.GET ,"/services").hasRole("ROLE_USER")
+                            .requestMatchers("/services/**").hasRole("ROLE_ADMIN")
+                            .anyRequest().permitAll()
                 );
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
