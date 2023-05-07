@@ -11,13 +11,14 @@ import java.security.SecureRandom;
 public class StringPasswordGenerator {
     private StringPasswordGenerator(){}
 
-    public static String generate(){
+    public String generate(){
         SecureRandom random = new SecureRandom();
 
         int lowerCaseCount = random.nextInt(3) + 2;
         int upperCaseCount = random.nextInt(3) + 2;
         int digitCount = random.nextInt(3) + 2;
-        int length = lowerCaseCount + upperCaseCount + digitCount;
+        int specialCharCount = random.nextInt(3);
+        int length = lowerCaseCount + upperCaseCount + digitCount + specialCharCount;
 
         CharacterRule lowerCaseRule = new CharacterRule(EnglishCharacterData.LowerCase);
         lowerCaseRule.setNumberOfCharacters(lowerCaseCount);
@@ -28,8 +29,11 @@ public class StringPasswordGenerator {
         CharacterRule digitRule = new CharacterRule(EnglishCharacterData.Digit);
         digitRule.setNumberOfCharacters(digitCount);
 
+        CharacterRule specialCharRule = new CharacterRule(EnglishCharacterData.Special);
+        specialCharRule.setNumberOfCharacters(specialCharCount);
+
         PasswordGenerator passGen = new PasswordGenerator();
 
-        return passGen.generatePassword(length, lowerCaseRule, upperCaseRule, digitRule);
+        return passGen.generatePassword(length, specialCharRule, lowerCaseRule, upperCaseRule, digitRule);
     }
 }
