@@ -17,7 +17,7 @@ public class StringPasswordGenerator {
         int lowerCaseCount = random.nextInt(3) + 2;
         int upperCaseCount = random.nextInt(3) + 2;
         int digitCount = random.nextInt(3) + 2;
-        int specialCharCount = random.nextInt(3);
+        int specialCharCount = random.nextInt(3) + 1;
         int length = lowerCaseCount + upperCaseCount + digitCount + specialCharCount;
 
         CharacterRule lowerCaseRule = new CharacterRule(EnglishCharacterData.LowerCase);
