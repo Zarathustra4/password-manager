@@ -1,5 +1,7 @@
 package com.passpnu.passwordmanager.controller;
 
+import com.passpnu.passwordmanager.dto.AuthResponseDto;
+import com.passpnu.passwordmanager.dto.AuthUserDetailsDto;
 import com.passpnu.passwordmanager.dto.UserDto;
 import com.passpnu.passwordmanager.service.UserEntityService;
 import com.passpnu.passwordmanager.util.JwtUtil;
@@ -9,9 +11,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -37,7 +41,7 @@ public class AuthController {
     }
 
     @PostMapping("/log-in")
-    public ResponseEntity<String> logIn(@RequestBody UserDto logInUser){
+    public AuthResponseDto logIn(@RequestBody UserDto logInUser){
 
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -50,9 +54,12 @@ public class AuthController {
 
         String jwt = jwtUtil.generateToken(userDetails);
 
-        return new ResponseEntity<>(jwt, HttpStatus.OK);
+        return AuthResponseDto.builder().token(jwt).build();
     }
 
-
+    @GetMapping("/auth")
+    public AuthUserDetailsDto getAuth(@AuthenticationPrincipal AuthUserDetailsDto user){
+        return user;
+    }
 
 }
