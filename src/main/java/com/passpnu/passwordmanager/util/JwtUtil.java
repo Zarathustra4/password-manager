@@ -17,6 +17,9 @@ public class JwtUtil {
     @Value("${JWT_SECRET}")
     private String SECRET_KEY;
 
+    @Value("${JWT_EXPIRATION}")
+    private int EXPIRATION;
+
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
     }
@@ -24,8 +27,6 @@ public class JwtUtil {
     public Date extractExpiration(String token) {
         return extractClaim(token, Claims::getExpiration);
     }
-
-    private static final int EXPIRATION = 1000 * 60 * 60 * 10;
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
