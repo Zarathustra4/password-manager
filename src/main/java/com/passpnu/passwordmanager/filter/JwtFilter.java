@@ -1,7 +1,10 @@
 package com.passpnu.passwordmanager.filter;
 
 
+import com.passpnu.passwordmanager.dto.AuthUserDetailsDto;
+import com.passpnu.passwordmanager.entity.Role;
 import com.passpnu.passwordmanager.util.JwtUtil;
+import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,7 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
@@ -33,15 +35,26 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String username = null;
         String jwt = null;
+        String password = null;
+        Role role = null;
         final String headerStart = "Bearer ";
+
 
         if (authHeader != null && authHeader.startsWith(headerStart)) {
             jwt = authHeader.substring(headerStart.length());
-            username = jwtUtil.extractUsername(jwt);
+            Claims claims = jwtUtil.extractAllClaims(jwt);
+
+            username = (String) claims.get("username");
+            password = (String) claims.get("password");
+            role = (Role) claims.get("role");
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username);
+            AuthUserDetailsDto userDetails = AuthUserDetailsDto.builder()
+                    .username(username)
+                    .role(role)
+                    .password(password)
+                    .build();
 
             if (jwtUtil.validateToken(jwt, userDetails)) {
 

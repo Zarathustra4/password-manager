@@ -25,12 +25,14 @@ public class JwtUtil {
         return extractClaim(token, Claims::getExpiration);
     }
 
+    private static final int EXPIRATION = 1000 * 60 * 60 * 10;
+
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
 
-    private Claims extractAllClaims(String token) {
+    public Claims extractAllClaims(String token) {
         return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
     }
 
@@ -41,6 +43,7 @@ public class JwtUtil {
     public String generateToken(UserDetails user) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("role", user.getAuthorities());
+        claims.put("password", user.getPassword());
         return createToken(claims, user.getUsername());
     }
 
@@ -49,7 +52,7 @@ public class JwtUtil {
                 .setClaims(claims)
                 .setSubject(subject)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 10))
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
