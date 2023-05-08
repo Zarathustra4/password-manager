@@ -9,4 +9,5 @@ public class AuthPasswordDto {
     private String password;
     private String serviceDomain;
     private String username;
+    //TODO switch String to Long id fields
 }

@@ -18,3 +18,4 @@ spring:
     user:
       password: ${USER_PASSWORD:user}
 jwt.secret: ${JWT_SECRET}
+jwt.expiration: ${JWT_EXPIRATION}
