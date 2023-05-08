@@ -4,16 +4,13 @@ import com.passpnu.passwordmanager.dto.UserDto;
 import com.passpnu.passwordmanager.entity.UserEntity;
 import com.passpnu.passwordmanager.repos.UserRepository;
 import lombok.AllArgsConstructor;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 
 @Service
 @AllArgsConstructor
-public class UserEntityServiceImpl implements UserEntityService, UserDetailsService {
+public class UserEntityServiceImpl implements UserEntityService{
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -32,12 +29,6 @@ public class UserEntityServiceImpl implements UserEntityService, UserDetailsServ
     @Override
     public Boolean existsByUsername(String username){
         return userRepository.existsByUsername(username);
-    }
-
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username).orElseThrow(
-                () -> new UsernameNotFoundException("User not found!"));
     }
 
 }
