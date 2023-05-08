@@ -37,7 +37,7 @@ public class ServiceEntityServiceImpl implements ServiceEntityService{
         String domain = service.getDomain();
         ServiceEntity serviceEntity = Objects.requireNonNull(
                 serviceRepository.findByDomain(domain),
-                "The service is not found by the domain - " + domain
+                "The service is not found by the domain - %s".formatted(domain)
         );
 
         serviceEntity.setDescription(service.getDescription());
