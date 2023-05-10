@@ -19,7 +19,7 @@ public class PasswordEncryptor {
 
     private SecretKeySpec secretKey;
 
-    private static final String ALGORITHM = "AES/GCM/NoPadding";
+    private static final String ALGORITHM = "AES";
 
     public void prepareSecreteKey(String myKey) {
         byte[] key;

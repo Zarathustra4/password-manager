@@ -30,10 +30,12 @@ public class JwtFilter extends OncePerRequestFilter {
 
         final var authHeader = httpServletRequest.getHeader("Authorization");
 
-        String username = null;
         String jwt = null;
-        String password = null;
+
+        String username = null;
+        String encryptionKey = null;
         Role role = null;
+        Long id = null;
         final String headerStart = "Bearer ";
 
 
@@ -42,15 +44,18 @@ public class JwtFilter extends OncePerRequestFilter {
             Claims claims = jwtUtil.extractAllClaims(jwt);
 
             username = jwtUtil.extractUsername(jwt);
-            password = (String) claims.get("password");
-            role = Role.ROLE_USER;
+            role = Role.valueOf( (String) claims.get("role") );
+            encryptionKey = (String) claims.get("encryptionKey");
+            id = Long.valueOf( (Integer) claims.get("id") );
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             AuthUserDetailsDto userDetails = AuthUserDetailsDto.builder()
                     .username(username)
                     .role(role)
-                    .password(password)
+                    //.password(password)
+                    .encryptionKey(encryptionKey)
+                    .id(id)
                     .build();
 
             if (jwtUtil.validateToken(jwt, userDetails)) {

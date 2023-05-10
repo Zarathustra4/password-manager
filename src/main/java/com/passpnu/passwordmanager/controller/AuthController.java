@@ -13,7 +13,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,16 +49,16 @@ public class AuthController {
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        final UserDetails userDetails = userDetailsService.loadUserByUsername(logInUser.getUsername());
+        final AuthUserDetailsDto userDetails = (AuthUserDetailsDto) userDetailsService.loadUserByUsername(logInUser.getUsername());
+
+        userDetails.setId(
+                userEntityService.getIdByUsername(userDetails.getUsername())
+        );
 
         String jwt = jwtUtil.generateToken(userDetails);
 
         return AuthResponseDto.builder().token(jwt).build();
     }
 
-    @GetMapping("/auth")
-    public AuthUserDetailsDto getAuth(@AuthenticationPrincipal AuthUserDetailsDto user){
-        return user;
-    }
 
 }

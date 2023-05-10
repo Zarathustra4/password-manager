@@ -18,6 +18,11 @@ public class ServiceEntityServiceImpl implements ServiceEntityService{
     private final ServiceMapper serviceMapper;
 
     @Override
+    public ServiceEntity getEntityById(Long id) throws NameNotFoundException {
+        return serviceRepository.findById(id).orElseThrow(() -> new NameNotFoundException("There is no such a service"));
+    }
+
+    @Override
     public List<ServiceDto> getServiceList() {
         List<ServiceEntity> serviceEntities = serviceRepository.findAll();
 

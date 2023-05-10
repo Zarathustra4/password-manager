@@ -27,7 +27,6 @@ public class PasswordEntity {
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Long id;
 
-    @NotBlank
     @ManyToOne
     @JoinColumn(name="service_id", nullable = false, updatable = false, insertable = false)
     private ServiceEntity service;
@@ -39,7 +38,10 @@ public class PasswordEntity {
     private String password;
 
     @ManyToOne
-    @JoinColumn(name="user_id", nullable = false)
+    @JoinColumn(name="user_id", nullable = false, insertable = false, updatable = false)
     private UserEntity user;
+
+    @Column(name="user_id")
+    private Long userId;
 
 }

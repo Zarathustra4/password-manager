@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 @Builder
-public class GuestPasswordDto {
+public class PasswordResponseDto {
     private String password;
 }

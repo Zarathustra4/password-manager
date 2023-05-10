@@ -13,6 +13,7 @@ import java.util.Collections;
 @Data
 @Builder
 public class AuthUserDetailsDto implements UserDetails {
+    private Long id;
     private String username;
     private String encryptionKey;
     private String password;
