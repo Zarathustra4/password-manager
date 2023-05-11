@@ -4,6 +4,7 @@ package com.passpnu.passwordmanager.controller;
 import com.passpnu.passwordmanager.dto.AuthUserDetailsDto;
 import com.passpnu.passwordmanager.dto.PasswordResponseDto;
 import com.passpnu.passwordmanager.dto.PasswordRequestDto;
+import com.passpnu.passwordmanager.exception.EncryptionException;
 import com.passpnu.passwordmanager.service.PasswordEntityService;
 import lombok.AllArgsConstructor;
 
@@ -20,12 +21,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
+
 import javax.naming.NameNotFoundException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+
 
 
 @RestController
@@ -43,38 +41,29 @@ public class PasswordController {
     @PostMapping("/generate")
     public PasswordResponseDto generateAndStorePassword(
             @AuthenticationPrincipal AuthUserDetailsDto userDetailsDto,
-            @RequestBody PasswordRequestDto passwordRequestDto)
-
-            throws NameNotFoundException, NoSuchPaddingException, IllegalBlockSizeException,
-            NoSuchAlgorithmException, BadPaddingException, InvalidKeyException
-
-    {
+            @RequestBody PasswordRequestDto passwordRequestDto
+    ) throws NameNotFoundException, EncryptionException {
         return passwordEntityService.generateAndStorePassword(passwordRequestDto, userDetailsDto);
     }
 
     @PostMapping
     public ResponseEntity<String> storePassword(@AuthenticationPrincipal AuthUserDetailsDto userDetailsDto,
                                                         @RequestBody PasswordRequestDto passwordRequest)
-            throws NameNotFoundException, NoSuchPaddingException, IllegalBlockSizeException,
-            NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+            throws NameNotFoundException, EncryptionException {
 
         passwordEntityService.savePassword(passwordRequest, userDetailsDto);
         return new ResponseEntity<>("Password was stored", HttpStatus.OK);
     }
 
     @GetMapping("/{serviceId}")
-    public PasswordResponseDto getPassword(@AuthenticationPrincipal AuthUserDetailsDto userDetailsDto, @PathVariable Long serviceId)
-            throws NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException,
-            BadPaddingException, InvalidKeyException {
-
+    public PasswordResponseDto getPassword(@AuthenticationPrincipal AuthUserDetailsDto userDetailsDto, @PathVariable Long serviceId) throws EncryptionException {
         return passwordEntityService.getPassword(serviceId, userDetailsDto);
     }
 
     @PutMapping
     public ResponseEntity<String> changePassword(
             @AuthenticationPrincipal AuthUserDetailsDto userDetailsDto,
-            @RequestBody PasswordRequestDto passwordRequestDto) throws NameNotFoundException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
-
+            @RequestBody PasswordRequestDto passwordRequestDto) throws NameNotFoundException, EncryptionException {
         passwordEntityService.changePassword(passwordRequestDto, userDetailsDto);
 
         return new ResponseEntity<>("Password was changed", HttpStatus.OK);

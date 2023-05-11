@@ -6,10 +6,10 @@ import com.passpnu.passwordmanager.dto.PasswordResponseDto;
 import com.passpnu.passwordmanager.encrypt.PasswordEncryptor;
 import com.passpnu.passwordmanager.entity.PasswordEntity;
 import com.passpnu.passwordmanager.entity.ServiceEntity;
-import com.passpnu.passwordmanager.entity.UserEntity;
+
+import com.passpnu.passwordmanager.exception.EncryptionException;
 import com.passpnu.passwordmanager.generator.StringPasswordGenerator;
-import com.passpnu.passwordmanager.mapper.CustomPasswordMapper;
-import com.passpnu.passwordmanager.mapper.PasswordMapper;
+
 import com.passpnu.passwordmanager.repos.PasswordRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
@@ -31,8 +31,7 @@ public class PasswordEntityServiceImpl implements PasswordEntityService{
     private final PasswordRepository passwordRepository;
     private final UserEntityService userService;
     private final ServiceEntityService serviceEntityService;
-    private final CustomPasswordMapper customPasswordMapper;
-    private final PasswordMapper passwordMapper;
+    private static final String ENCRYPTION_EXCEPTION_MESSAGE = "Trying to encrypt caused an error";
 
     public PasswordResponseDto generatePassword(){
         return PasswordResponseDto.builder()
@@ -41,27 +40,37 @@ public class PasswordEntityServiceImpl implements PasswordEntityService{
     }
 
     @Override
-    public PasswordResponseDto getPassword(Long serviceId, AuthUserDetailsDto userDto)
-            throws NoSuchPaddingException, IllegalBlockSizeException,
-            NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    public PasswordResponseDto getPassword(Long serviceId, AuthUserDetailsDto userDto) throws EncryptionException {
 
         Long userId = userService.getIdByUsername(userDto.getUsername());
         PasswordEntity passwordEntity = passwordRepository.findByUserIdAndServiceId(userId, serviceId);
-
-        String decodedPassword = passwordEncryptor.decrypt(passwordEntity.getPassword(), userDto.getEncryptionKey());
+        String decodedPassword;
+        try {
+            decodedPassword = passwordEncryptor.decrypt(passwordEntity.getPassword(), userDto.getEncryptionKey());
+        }
+        catch (NoSuchPaddingException | IllegalBlockSizeException |
+                NoSuchAlgorithmException | BadPaddingException | InvalidKeyException ex){
+            throw new EncryptionException(ENCRYPTION_EXCEPTION_MESSAGE);
+        }
         return PasswordResponseDto.builder().password(decodedPassword).build();
     }
 
     @Override
     public void savePassword(PasswordRequestDto passwordRequestDto, AuthUserDetailsDto userDto)
-            throws NoSuchPaddingException, IllegalBlockSizeException,
-            NoSuchAlgorithmException, BadPaddingException, InvalidKeyException, NameNotFoundException {
+            throws NameNotFoundException, EncryptionException {
+
+        String encodedPassword;
 
         Long userId = userDto.getId();
-        String encodedPassword = passwordEncryptor.encrypt(passwordRequestDto.getPassword(), userDto.getEncryptionKey());
+        try {
+            encodedPassword = passwordEncryptor.encrypt(passwordRequestDto.getPassword(), userDto.getEncryptionKey());
+        }
+        catch (NoSuchPaddingException | IllegalBlockSizeException |
+               NoSuchAlgorithmException | BadPaddingException | InvalidKeyException ex){
+            throw new EncryptionException(ENCRYPTION_EXCEPTION_MESSAGE);
+        }
         Long serviceId = passwordRequestDto.getServiceId();
 
-        UserEntity userEntity = userService.getUserById(userId);
         ServiceEntity serviceEntity = serviceEntityService.getEntityById(serviceId);
 
 
@@ -77,8 +86,6 @@ public class PasswordEntityServiceImpl implements PasswordEntityService{
         PasswordEntity passwordEntity = PasswordEntity.builder()
                 .serviceId(serviceId)
                 .userId(userId)
-                .user(userEntity)
-                .service(serviceEntity)
                 .password(encodedPassword)
                 .build();
 
@@ -86,12 +93,13 @@ public class PasswordEntityServiceImpl implements PasswordEntityService{
     }
 
     @Override
-    public PasswordResponseDto generateAndStorePassword(PasswordRequestDto passwordRequestDto, AuthUserDetailsDto userDto) throws NameNotFoundException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    public PasswordResponseDto generateAndStorePassword(PasswordRequestDto passwordRequestDto, AuthUserDetailsDto userDto)
+            throws NameNotFoundException, EncryptionException {
         Long userId = userDto.getId();
 
         Long serviceId = passwordRequestDto.getServiceId();
         ServiceEntity serviceEntity = serviceEntityService.getEntityById(serviceId);
-        UserEntity userEntity = userService.getUserById(userId);
+
 
         if(passwordRepository.existsByUserIdAndServiceId(userId, serviceId)){
             //change to relevant exception
@@ -101,15 +109,19 @@ public class PasswordEntityServiceImpl implements PasswordEntityService{
             );
         }
         String generatedPassword = passwordGenerator.generate();
-        String encodedPassword = passwordEncryptor.encrypt(generatedPassword, userDto.getEncryptionKey());
-
+        String encodedPassword;
+        try {
+            encodedPassword = passwordEncryptor.encrypt(generatedPassword, userDto.getEncryptionKey());
+        }
+        catch (NoSuchPaddingException | IllegalBlockSizeException |
+               NoSuchAlgorithmException | BadPaddingException | InvalidKeyException ex){
+            throw new EncryptionException(ENCRYPTION_EXCEPTION_MESSAGE);
+        }
         PasswordResponseDto passwordResponseDto = PasswordResponseDto.builder().password(generatedPassword).build();
 
         PasswordEntity passwordEntity = PasswordEntity.builder()
                 .serviceId(serviceId)
                 .userId(userId)
-                .user(userEntity)
-                .service(serviceEntity)
                 .password(encodedPassword)
                 .build();
 
@@ -119,7 +131,8 @@ public class PasswordEntityServiceImpl implements PasswordEntityService{
     }
 
     @Override
-    public void changePassword(PasswordRequestDto passwordRequestDto, AuthUserDetailsDto userDto) throws NameNotFoundException, NoSuchPaddingException, IllegalBlockSizeException, NoSuchAlgorithmException, BadPaddingException, InvalidKeyException {
+    public void changePassword(PasswordRequestDto passwordRequestDto, AuthUserDetailsDto userDto)
+            throws NameNotFoundException, EncryptionException {
         Long userId = userDto.getId();
 
         Long serviceId = passwordRequestDto.getServiceId();
@@ -134,11 +147,18 @@ public class PasswordEntityServiceImpl implements PasswordEntityService{
         }
 
         PasswordEntity passwordEntity = passwordRepository.findByUserIdAndServiceId(userId, serviceId);
+        String encryptedPassword;
+        try{
+            encryptedPassword = passwordEncryptor.encrypt(
+                    passwordRequestDto.getPassword(),
+                    userDto.getEncryptionKey()
+            );
+        }
+        catch (NoSuchPaddingException | IllegalBlockSizeException |
+               NoSuchAlgorithmException | BadPaddingException | InvalidKeyException ex){
+            throw new EncryptionException(ENCRYPTION_EXCEPTION_MESSAGE);
+        }
 
-        String encryptedPassword = passwordEncryptor.encrypt(
-                passwordRequestDto.getPassword(),
-                userDto.getEncryptionKey()
-        );
 
         passwordEntity.setPassword(encryptedPassword);
 
