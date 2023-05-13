@@ -12,7 +12,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -23,8 +22,6 @@ import java.io.IOException;
 @AllArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
-    private final UserDetailsService userDetailsService;
-
     private final JwtUtil jwtUtil;
 
     @Override
@@ -33,10 +30,12 @@ public class JwtFilter extends OncePerRequestFilter {
 
         final var authHeader = httpServletRequest.getHeader("Authorization");
 
-        String username = null;
         String jwt = null;
-        String password = null;
+
+        String username = null;
+        String encryptionKey = null;
         Role role = null;
+        Long id = null;
         final String headerStart = "Bearer ";
 
 
@@ -44,16 +43,19 @@ public class JwtFilter extends OncePerRequestFilter {
             jwt = authHeader.substring(headerStart.length());
             Claims claims = jwtUtil.extractAllClaims(jwt);
 
-            username = (String) claims.get("username");
-            password = (String) claims.get("password");
-            role = (Role) claims.get("role");
+            username = jwtUtil.extractUsername(jwt);
+            role = Role.valueOf( (String) claims.get("role") );
+            encryptionKey = (String) claims.get("encryptionKey");
+            id = Long.valueOf( (Integer) claims.get("id") );
         }
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             AuthUserDetailsDto userDetails = AuthUserDetailsDto.builder()
                     .username(username)
                     .role(role)
-                    .password(password)
+                    //.password(password)
+                    .encryptionKey(encryptionKey)
+                    .id(id)
                     .build();
 
             if (jwtUtil.validateToken(jwt, userDetails)) {

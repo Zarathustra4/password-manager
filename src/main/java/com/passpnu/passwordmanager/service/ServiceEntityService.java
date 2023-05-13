@@ -1,6 +1,7 @@
 package com.passpnu.passwordmanager.service;
 
 import com.passpnu.passwordmanager.dto.ServiceDto;
+import com.passpnu.passwordmanager.entity.ServiceEntity;
 
 import javax.naming.NameNotFoundException;
 import java.util.List;
@@ -15,4 +16,6 @@ public interface ServiceEntityService {
     boolean existsByDomain(ServiceDto serviceDto);
 
     ServiceDto getById(String id) throws NameNotFoundException;
+
+    ServiceEntity getEntityById(Long id) throws NameNotFoundException;
 }

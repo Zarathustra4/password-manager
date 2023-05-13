@@ -1,5 +1,6 @@
 package com.passpnu.passwordmanager.util;
 
+import com.passpnu.passwordmanager.dto.AuthUserDetailsDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -41,10 +42,11 @@ public class JwtUtil {
         return extractExpiration(token).before(new Date());
     }
 
-    public String generateToken(UserDetails user) {
+    public String generateToken(AuthUserDetailsDto user) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("role", user.getAuthorities());
-        claims.put("password", user.getPassword());
+        claims.put("role", user.getRole());
+        claims.put("encryptionKey", user.getEncryptionKey());
+        claims.put("id", user.getId());
         return createToken(claims, user.getUsername());
     }
 
