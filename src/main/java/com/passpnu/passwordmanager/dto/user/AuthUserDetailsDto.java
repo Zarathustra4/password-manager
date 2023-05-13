@@ -1,4 +1,4 @@
-package com.passpnu.passwordmanager.dto;
+package com.passpnu.passwordmanager.dto.user;
 
 import com.passpnu.passwordmanager.entity.Role;
 import lombok.Builder;

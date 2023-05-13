@@ -1,4 +1,4 @@
-package com.passpnu.passwordmanager.dto;
+package com.passpnu.passwordmanager.dto.password;
 
 import lombok.Builder;
 import lombok.Data;

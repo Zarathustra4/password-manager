@@ -1,8 +1,8 @@
 package com.passpnu.passwordmanager.controller;
 
-import com.passpnu.passwordmanager.dto.AuthResponseDto;
-import com.passpnu.passwordmanager.dto.AuthUserDetailsDto;
-import com.passpnu.passwordmanager.dto.UserDto;
+import com.passpnu.passwordmanager.dto.user.AuthResponseDto;
+import com.passpnu.passwordmanager.dto.user.AuthUserDetailsDto;
+import com.passpnu.passwordmanager.dto.user.UserDto;
 import com.passpnu.passwordmanager.service.UserEntityService;
 import com.passpnu.passwordmanager.util.JwtUtil;
 import lombok.AllArgsConstructor;

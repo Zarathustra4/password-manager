@@ -1,6 +1,6 @@
 package com.passpnu.passwordmanager.controller;
 
-import com.passpnu.passwordmanager.dto.ServiceDto;
+import com.passpnu.passwordmanager.dto.service.ServiceDto;
 import com.passpnu.passwordmanager.service.ServiceEntityService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
