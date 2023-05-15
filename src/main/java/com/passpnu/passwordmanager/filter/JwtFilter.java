@@ -1,7 +1,7 @@
 package com.passpnu.passwordmanager.filter;
 
 
-import com.passpnu.passwordmanager.dto.AuthUserDetailsDto;
+import com.passpnu.passwordmanager.dto.user.AuthUserDetailsDto;
 import com.passpnu.passwordmanager.entity.Role;
 import com.passpnu.passwordmanager.util.JwtUtil;
 import io.jsonwebtoken.Claims;

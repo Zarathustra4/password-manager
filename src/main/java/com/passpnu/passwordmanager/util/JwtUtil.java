@@ -1,6 +1,6 @@
 package com.passpnu.passwordmanager.util;
 
-import com.passpnu.passwordmanager.dto.AuthUserDetailsDto;
+import com.passpnu.passwordmanager.dto.user.AuthUserDetailsDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;

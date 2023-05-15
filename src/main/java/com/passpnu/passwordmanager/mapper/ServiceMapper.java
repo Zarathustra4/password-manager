@@ -1,6 +1,6 @@
 package com.passpnu.passwordmanager.mapper;
 
-import com.passpnu.passwordmanager.dto.ServiceDto;
+import com.passpnu.passwordmanager.dto.service.ServiceDto;
 import com.passpnu.passwordmanager.entity.ServiceEntity;
 import org.mapstruct.Mapper;
 

@@ -1,8 +1,8 @@
 package com.passpnu.passwordmanager.controller;
 
-import com.passpnu.passwordmanager.dto.AuthResponseDto;
-import com.passpnu.passwordmanager.dto.AuthUserDetailsDto;
-import com.passpnu.passwordmanager.dto.UserDto;
+import com.passpnu.passwordmanager.dto.user.AuthResponseDto;
+import com.passpnu.passwordmanager.dto.user.AuthUserDetailsDto;
+import com.passpnu.passwordmanager.dto.user.UserDto;
 import com.passpnu.passwordmanager.service.UserEntityService;
 import com.passpnu.passwordmanager.util.JwtUtil;
 import lombok.AllArgsConstructor;
@@ -11,8 +11,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -58,4 +60,8 @@ public class AuthController {
         return AuthResponseDto.builder().token(jwt).build();
     }
 
+    @GetMapping("/user")
+    public AuthUserDetailsDto getUser(@AuthenticationPrincipal AuthUserDetailsDto userDetailsDto){
+        return userDetailsDto;
+    }
 }

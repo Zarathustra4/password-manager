@@ -1,8 +1,8 @@
 package com.passpnu.passwordmanager.service;
 
-import com.passpnu.passwordmanager.dto.PasswordRequestDto;
-import com.passpnu.passwordmanager.dto.AuthUserDetailsDto;
-import com.passpnu.passwordmanager.dto.PasswordResponseDto;
+import com.passpnu.passwordmanager.dto.password.PasswordRequestDto;
+import com.passpnu.passwordmanager.dto.user.AuthUserDetailsDto;
+import com.passpnu.passwordmanager.dto.password.PasswordResponseDto;
 import com.passpnu.passwordmanager.encrypt.PasswordEncryptor;
 import com.passpnu.passwordmanager.entity.PasswordEntity;
 import com.passpnu.passwordmanager.entity.ServiceEntity;
