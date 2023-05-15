@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,6 +40,7 @@ public class PasswordController {
     }
 
     @PostMapping("/generate")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public PasswordResponseDto generateAndStorePassword(
             @AuthenticationPrincipal AuthUserDetailsDto userDetailsDto,
             @RequestBody PasswordRequestDto passwordRequestDto
@@ -47,6 +49,7 @@ public class PasswordController {
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<String> storePassword(@AuthenticationPrincipal AuthUserDetailsDto userDetailsDto,
                                                         @RequestBody PasswordRequestDto passwordRequest)
             throws NameNotFoundException, EncryptionException {
@@ -56,11 +59,13 @@ public class PasswordController {
     }
 
     @GetMapping("/{serviceId}")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public PasswordResponseDto getPassword(@AuthenticationPrincipal AuthUserDetailsDto userDetailsDto, @PathVariable Long serviceId) throws EncryptionException {
         return passwordEntityService.getPassword(serviceId, userDetailsDto);
     }
 
     @PutMapping
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<String> changePassword(
             @AuthenticationPrincipal AuthUserDetailsDto userDetailsDto,
             @RequestBody PasswordRequestDto passwordRequestDto) throws NameNotFoundException, EncryptionException {
@@ -70,6 +75,7 @@ public class PasswordController {
     }
 
     @DeleteMapping("/{serviceId}")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<String> deletePassword(
             @AuthenticationPrincipal AuthUserDetailsDto userDetailsDto,
             @PathVariable Long serviceId
