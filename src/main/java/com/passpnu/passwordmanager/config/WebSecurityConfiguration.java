@@ -37,14 +37,6 @@ public class WebSecurityConfiguration {
                                     HttpServletResponse.SC_UNAUTHORIZED,
                                     ex.getMessage()
                             )
-                )
-
-                .and()
-                .authorizeHttpRequests(
-                    requests -> requests
-                            .requestMatchers(HttpMethod.GET ,"/services").hasRole("ROLE_USER")
-                            .requestMatchers("/services/**").hasRole("ROLE_ADMIN")
-                            .anyRequest().permitAll()
                 );
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);

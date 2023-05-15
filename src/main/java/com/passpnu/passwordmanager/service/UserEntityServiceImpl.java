@@ -6,6 +6,7 @@ import com.passpnu.passwordmanager.entity.Role;
 import com.passpnu.passwordmanager.entity.UserEntity;
 import com.passpnu.passwordmanager.repos.UserRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -56,11 +57,11 @@ public class UserEntityServiceImpl implements UserEntityService{
     }
 
     @Override
-    public void changeRole(ChangeRoleDto changeRoleDto) throws NameNotFoundException {
+    public void changeRole(ChangeRoleDto changeRoleDto) throws UsernameNotFoundException {
         String username = changeRoleDto.getUsername();
         UserEntity userEntity = userRepository.findByUsername(username).
                 orElseThrow(
-                        () -> new NameNotFoundException("There is no such a user with username: %s"
+                        () -> new UsernameNotFoundException("There is no such a user with username: %s"
                         .formatted(username))
                 );
         userEntity.setRole(changeRoleDto.getRole());
