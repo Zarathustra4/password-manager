@@ -7,7 +7,8 @@ import java.util.List;
 @Data
 @Builder
 public class AnalysisDto {
-    private String serviceName;
+    private String password;
+    private Long serviceId;
     private boolean isStrong;
     private List<SimilarPasswordDto> similarPasswords;
 

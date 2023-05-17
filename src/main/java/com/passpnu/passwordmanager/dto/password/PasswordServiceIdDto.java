@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class PasswordRequestDto {
+public class PasswordServiceIdDto {
     private String password;
     private Long serviceId;
 }

@@ -6,7 +6,7 @@ import lombok.Data;
 @Data
 @Builder
 public class SimilarPasswordDto {
-    private String serviceName;
+    private Long serviceId;
     private String serviceDomain;
     private Double similarity;
     private String password;

@@ -4,7 +4,7 @@ import com.passpnu.passwordmanager.dto.AnalysisDto;
 import com.passpnu.passwordmanager.dto.password.GuestPasswordDto;
 import com.passpnu.passwordmanager.dto.user.AuthUserDetailsDto;
 import com.passpnu.passwordmanager.dto.password.PasswordResponseDto;
-import com.passpnu.passwordmanager.dto.password.PasswordRequestDto;
+import com.passpnu.passwordmanager.dto.password.PasswordServiceIdDto;
 import com.passpnu.passwordmanager.exception.EncryptionException;
 import com.passpnu.passwordmanager.exception.PasswordServiceMappingException;
 import com.passpnu.passwordmanager.service.PasswordEntityService;
@@ -46,15 +46,15 @@ public class PasswordController {
     @PreAuthorize("hasRole('ROLE_USER')")
     public PasswordResponseDto generateAndStorePassword(
             @AuthenticationPrincipal AuthUserDetailsDto userDetailsDto,
-            @RequestBody PasswordRequestDto passwordRequestDto
+            @RequestBody PasswordServiceIdDto passwordServiceIdDto
     ) throws NameNotFoundException, EncryptionException {
-        return passwordEntityService.generateAndStorePassword(passwordRequestDto, userDetailsDto);
+        return passwordEntityService.generateAndStorePassword(passwordServiceIdDto, userDetailsDto);
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<String> storePassword(@AuthenticationPrincipal AuthUserDetailsDto userDetailsDto,
-                                                        @RequestBody PasswordRequestDto passwordRequest)
+                                                        @RequestBody PasswordServiceIdDto passwordRequest)
             throws NameNotFoundException, EncryptionException {
 
         passwordEntityService.savePassword(passwordRequest, userDetailsDto);
@@ -67,12 +67,18 @@ public class PasswordController {
         return passwordEntityService.getPassword(serviceId, userDetailsDto);
     }
 
+    @GetMapping("/list")
+    @PreAuthorize("hasRole('ROLE_USER')")
+    public List<PasswordServiceIdDto> getPasswordList(@AuthenticationPrincipal AuthUserDetailsDto userDetailsDto){
+        return passwordEntityService.getPasswordList(userDetailsDto);
+    }
+
     @PutMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<String> changePassword(
             @AuthenticationPrincipal AuthUserDetailsDto userDetailsDto,
-            @RequestBody PasswordRequestDto passwordRequestDto) throws NameNotFoundException, EncryptionException, PasswordServiceMappingException {
-        passwordEntityService.changePassword(passwordRequestDto, userDetailsDto);
+            @RequestBody PasswordServiceIdDto passwordServiceIdDto) throws NameNotFoundException, EncryptionException, PasswordServiceMappingException {
+        passwordEntityService.changePassword(passwordServiceIdDto, userDetailsDto);
 
         return new ResponseEntity<>("Password was changed", HttpStatus.OK);
     }
@@ -94,6 +100,7 @@ public class PasswordController {
     }
 
     @GetMapping("/analysis")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public List<AnalysisDto> analyzePasswordSystem(@AuthenticationPrincipal AuthUserDetailsDto authUserDetailsDto) throws EncryptionException, NameNotFoundException {
         return passwordEntityService.analyzeSystem(authUserDetailsDto);
     }

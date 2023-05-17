@@ -2,8 +2,7 @@ package com.passpnu.passwordmanager.service;
 
 import com.passpnu.passwordmanager.dto.AnalysisDto;
 import com.passpnu.passwordmanager.dto.SimilarPasswordDto;
-import com.passpnu.passwordmanager.dto.password.PasswordDto;
-import com.passpnu.passwordmanager.dto.password.PasswordRequestDto;
+import com.passpnu.passwordmanager.dto.password.PasswordServiceIdDto;
 import com.passpnu.passwordmanager.dto.user.AuthUserDetailsDto;
 import com.passpnu.passwordmanager.dto.password.PasswordResponseDto;
 import com.passpnu.passwordmanager.encrypt.PasswordEncryptor;
@@ -12,6 +11,7 @@ import com.passpnu.passwordmanager.entity.ServiceEntity;
 
 import com.passpnu.passwordmanager.exception.EncryptionException;
 import com.passpnu.passwordmanager.exception.PasswordServiceMappingException;
+import com.passpnu.passwordmanager.exception.UncheckedEncryptionException;
 import com.passpnu.passwordmanager.generator.StringPasswordGenerator;
 
 import com.passpnu.passwordmanager.mapper.CustomPasswordMapper;
@@ -31,7 +31,6 @@ import javax.crypto.NoSuchPaddingException;
 import javax.naming.NameNotFoundException;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
 
 import java.util.List;
 
@@ -80,20 +79,20 @@ public class PasswordEntityServiceImpl implements PasswordEntityService{
     }
 
     @Override
-    public void savePassword(PasswordRequestDto passwordRequestDto, AuthUserDetailsDto userDto)
+    public void savePassword(PasswordServiceIdDto passwordServiceIdDto, AuthUserDetailsDto userDto)
             throws NameNotFoundException, EncryptionException {
 
         String encodedPassword;
 
         Long userId = userDto.getId();
         try {
-            encodedPassword = passwordEncryptor.encrypt(passwordRequestDto.getPassword(), userDto.getEncryptionKey());
+            encodedPassword = passwordEncryptor.encrypt(passwordServiceIdDto.getPassword(), userDto.getEncryptionKey());
         }
         catch (NoSuchPaddingException | IllegalBlockSizeException |
                NoSuchAlgorithmException | BadPaddingException | InvalidKeyException ex){
             throw new EncryptionException(ENCRYPTION_EXCEPTION_MESSAGE);
         }
-        Long serviceId = passwordRequestDto.getServiceId();
+        Long serviceId = passwordServiceIdDto.getServiceId();
 
         ServiceEntity serviceEntity = serviceEntityService.getEntityById(serviceId);
 
@@ -117,11 +116,11 @@ public class PasswordEntityServiceImpl implements PasswordEntityService{
     }
 
     @Override
-    public PasswordResponseDto generateAndStorePassword(PasswordRequestDto passwordRequestDto, AuthUserDetailsDto userDto)
+    public PasswordResponseDto generateAndStorePassword(PasswordServiceIdDto passwordServiceIdDto, AuthUserDetailsDto userDto)
             throws NameNotFoundException, EncryptionException {
         Long userId = userDto.getId();
 
-        Long serviceId = passwordRequestDto.getServiceId();
+        Long serviceId = passwordServiceIdDto.getServiceId();
         ServiceEntity serviceEntity = serviceEntityService.getEntityById(serviceId);
 
 
@@ -155,11 +154,30 @@ public class PasswordEntityServiceImpl implements PasswordEntityService{
     }
 
     @Override
-    public void changePassword(PasswordRequestDto passwordRequestDto, AuthUserDetailsDto userDto)
+    public List<PasswordServiceIdDto> getPasswordList(AuthUserDetailsDto userDetailsDto) {
+        List<PasswordEntity> entities = passwordRepository.findAllByUserId(userDetailsDto.getId());
+        List<PasswordServiceIdDto> passwords;
+
+        String encryptionKey = userDetailsDto.getEncryptionKey();
+        passwords = entities.stream().map(
+                entity -> {
+                    try {
+                        return customPasswordMapper.entityToDecryptedPasswordServiceDto(entity, passwordEncryptor, encryptionKey);
+                    } catch (EncryptionException e) {
+                        throw new UncheckedEncryptionException(e.getMessage());
+                    }
+                }
+        ).toList();
+
+        return passwords;
+    }
+
+    @Override
+    public void changePassword(PasswordServiceIdDto passwordServiceIdDto, AuthUserDetailsDto userDto)
             throws NameNotFoundException, EncryptionException, PasswordServiceMappingException {
         Long userId = userDto.getId();
 
-        Long serviceId = passwordRequestDto.getServiceId();
+        Long serviceId = passwordServiceIdDto.getServiceId();
         ServiceEntity serviceEntity = serviceEntityService.getEntityById(serviceId);
 
         if(!passwordRepository.existsByUserIdAndServiceId(userId, serviceId)){
@@ -174,7 +192,7 @@ public class PasswordEntityServiceImpl implements PasswordEntityService{
         String encryptedPassword;
         try{
             encryptedPassword = passwordEncryptor.encrypt(
-                    passwordRequestDto.getPassword(),
+                    passwordServiceIdDto.getPassword(),
                     userDto.getEncryptionKey()
             );
         }
@@ -197,55 +215,62 @@ public class PasswordEntityServiceImpl implements PasswordEntityService{
 
     @Override
     public List<AnalysisDto> analyzeSystem(AuthUserDetailsDto authUser) throws EncryptionException, NameNotFoundException {
-        List<AnalysisDto> analysis = new ArrayList<>();
+        final String encryptionKey = authUser.getEncryptionKey();
 
         List<PasswordEntity> entities = passwordRepository.findAllByUserId(authUser.getId());
-        List<PasswordDto> passwordDtoList = new ArrayList<>();
-        for(PasswordEntity entity : entities){
-            passwordDtoList.add(
-                    customPasswordMapper.entityToDecryptedDto(entity, passwordEncryptor, authUser.getEncryptionKey())
-            );
-        }
 
-        final int passwordDtoListSize = passwordDtoList.size();
-        String serviceName;
-        PasswordDto passwordDto1;
-        PasswordDto passwordDto2;
-        PasswordTestAnswer passwordTestAnswer;
-        AnalysisDto analysisDto;
+        List<AnalysisDto> analysisDtoList = entities.stream()
+                .map(entity -> {
+                    try {
+                        return customPasswordMapper.entityToAnalysisDto(entity, passwordEncryptor, encryptionKey);
+                    } catch (EncryptionException e) {
+                        throw new UncheckedEncryptionException(e.getMessage());
+                    }
+                })
+                .toList();
+
+        final int listSize = analysisDtoList.size();
+        String firstPassword;
+        String secondPassword;
+        AnalysisDto firstAnalysisDto;
+        AnalysisDto secondAnalysisDto;
         double similarity;
+        SimilarPasswordDto firstToSecond;
+        SimilarPasswordDto secondToFirst;
 
-        for(int i = 0; i < passwordDtoListSize; i++){
-            passwordDto1 = passwordDtoList.get(i);
-            serviceName = serviceEntityService.getEntityById(passwordDto1.getServiceId()).getTitle();
-            passwordTestAnswer = checkPasswordStrength(passwordDto1.getPassword());
-            analysisDto = AnalysisDto.builder()
-                    .serviceName(serviceName)
-                    .similarPasswords(new ArrayList<>())
-                    .isStrong(passwordTestAnswer.isStrong())
-                    .build();
+        for(int i = 0; i < listSize; i++){
+            firstAnalysisDto = analysisDtoList.get(i);
+            firstPassword = firstAnalysisDto.getPassword();
+            firstAnalysisDto.setStrong(passwordUtil.isPasswordStrong(firstPassword).isStrong());
 
-            analysis.add(analysisDto);
-            for(int j = 0; j < passwordDtoListSize; j++){
-                if(i == j){
-                    continue;
+            for(int j = i + 1; j < listSize; j++){
+
+                secondAnalysisDto = analysisDtoList.get(j);
+                secondPassword = secondAnalysisDto.getPassword();
+
+                similarity = stringSimilarityUtil.calculateSimilarity(firstPassword, secondPassword);
+                if(similarity > 0.5){
+
+                    secondToFirst = SimilarPasswordDto.builder()
+                            .password(secondPassword)
+                            .serviceDomain(serviceEntityService.getDomainById(secondAnalysisDto.getServiceId()))
+                            .similarity(similarity)
+                            .serviceId(secondAnalysisDto.getServiceId())
+                            .build();
+
+                    firstToSecond = SimilarPasswordDto.builder()
+                            .password(firstPassword)
+                            .serviceDomain(serviceEntityService.getDomainById(firstAnalysisDto.getServiceId()))
+                            .similarity(similarity)
+                            .serviceId(firstAnalysisDto.getServiceId())
+                            .build();
+
+                    firstAnalysisDto.addSimilarPassword(secondToFirst);
+                    secondAnalysisDto.addSimilarPassword(firstToSecond);
                 }
-                passwordDto2 = passwordDtoList.get(j);
-                similarity = stringSimilarityUtil.calculateSimilarity(
-                        passwordDto1.getPassword(),
-                        passwordDto2.getPassword());
-                analysisDto.addSimilarPassword(
-                        SimilarPasswordDto.builder()
-                                .similarity(similarity)
-                                .serviceDomain(serviceEntityService.getEntityById(passwordDto2.getServiceId()).getTitle())
-                                .serviceDomain(serviceEntityService.getEntityById(passwordDto2.getServiceId()).getDomain())
-                                .password(passwordDto2.getPassword())
-                                .build()
-                );
             }
-            analysis.add(analysisDto);
         }
 
-        return analysis;
+        return analysisDtoList;
     }
 }

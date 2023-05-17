@@ -23,6 +23,14 @@ public class ServiceEntityServiceImpl implements ServiceEntityService{
     }
 
     @Override
+    public String getDomainById(Long id) throws NameNotFoundException {
+        return serviceRepository
+                .findById(id)
+                .orElseThrow(() -> new NameNotFoundException("There is no such a service"))
+                .getDomain();
+    }
+
+    @Override
     public List<ServiceDto> getServiceList() {
         List<ServiceEntity> serviceEntities = serviceRepository.findAll();
 

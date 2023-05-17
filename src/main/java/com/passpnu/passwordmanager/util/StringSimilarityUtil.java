@@ -14,6 +14,7 @@ public class StringSimilarityUtil {
         return count;
     }
 
+
     public int reverseHammingDistance(String smallerString, String longerString){
         int count = 0;
 
