@@ -1,11 +1,14 @@
 package com.passpnu.passwordmanager.controller;
 
-
+import com.passpnu.passwordmanager.dto.AnalysisDto;
+import com.passpnu.passwordmanager.dto.password.GuestPasswordDto;
 import com.passpnu.passwordmanager.dto.user.AuthUserDetailsDto;
 import com.passpnu.passwordmanager.dto.password.PasswordResponseDto;
 import com.passpnu.passwordmanager.dto.password.PasswordRequestDto;
 import com.passpnu.passwordmanager.exception.EncryptionException;
+import com.passpnu.passwordmanager.exception.PasswordServiceMappingException;
 import com.passpnu.passwordmanager.service.PasswordEntityService;
+import com.passpnu.passwordmanager.util.PasswordTestAnswer;
 import lombok.AllArgsConstructor;
 
 import org.springframework.http.HttpStatus;
@@ -22,8 +25,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-
 import javax.naming.NameNotFoundException;
+import java.util.List;
 
 
 
@@ -68,7 +71,7 @@ public class PasswordController {
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<String> changePassword(
             @AuthenticationPrincipal AuthUserDetailsDto userDetailsDto,
-            @RequestBody PasswordRequestDto passwordRequestDto) throws NameNotFoundException, EncryptionException {
+            @RequestBody PasswordRequestDto passwordRequestDto) throws NameNotFoundException, EncryptionException, PasswordServiceMappingException {
         passwordEntityService.changePassword(passwordRequestDto, userDetailsDto);
 
         return new ResponseEntity<>("Password was changed", HttpStatus.OK);
@@ -82,5 +85,16 @@ public class PasswordController {
     ){
         passwordEntityService.deletePassword(serviceId, userDetailsDto);
         return new ResponseEntity<>("The password was deleted successfully", HttpStatus.OK);
+    }
+
+    @PostMapping("/advice")
+    public PasswordTestAnswer checkPasswordStrength(@RequestBody GuestPasswordDto passwordDto){
+        String password = passwordDto.getPassword();
+        return passwordEntityService.checkPasswordStrength(password);
+    }
+
+    @GetMapping("/analysis")
+    public List<AnalysisDto> analyzePasswordSystem(@AuthenticationPrincipal AuthUserDetailsDto authUserDetailsDto) throws EncryptionException, NameNotFoundException {
+        return passwordEntityService.analyzeSystem(authUserDetailsDto);
     }
 }
