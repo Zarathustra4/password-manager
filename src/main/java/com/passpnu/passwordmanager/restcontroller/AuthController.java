@@ -1,4 +1,4 @@
-package com.passpnu.passwordmanager.controller;
+package com.passpnu.passwordmanager.restcontroller;
 
 import com.passpnu.passwordmanager.dto.user.AuthResponseDto;
 import com.passpnu.passwordmanager.dto.user.AuthUserDetailsDto;

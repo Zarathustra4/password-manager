@@ -1,7 +1,6 @@
 package com.passpnu.passwordmanager.service;
 
 import com.passpnu.passwordmanager.dto.AnalysisDto;
-import com.passpnu.passwordmanager.dto.SimilarPasswordDto;
 import com.passpnu.passwordmanager.dto.password.PasswordServiceIdDto;
 import com.passpnu.passwordmanager.dto.user.AuthUserDetailsDto;
 import com.passpnu.passwordmanager.dto.password.PasswordResponseDto;
@@ -16,7 +15,6 @@ import com.passpnu.passwordmanager.exception.UncheckedEncryptionException;
 import com.passpnu.passwordmanager.generator.StringPasswordGenerator;
 
 import com.passpnu.passwordmanager.mapper.CustomPasswordMapper;
-import com.passpnu.passwordmanager.mapper.PasswordMapper;
 import com.passpnu.passwordmanager.repos.PasswordRepository;
 import com.passpnu.passwordmanager.util.PasswordTestAnswer;
 import com.passpnu.passwordmanager.util.PasswordUtil;
@@ -227,47 +225,14 @@ public class PasswordEntityServiceImpl implements PasswordEntityService{
                 })
                 .toList();
 
-        final int listSize = analysisDtoList.size();
-        String firstPassword;
-        String secondPassword;
-        AnalysisDto firstAnalysisDto;
-        AnalysisDto secondAnalysisDto;
-        double similarity;
-        SimilarPasswordDto firstToSecond;
-        SimilarPasswordDto secondToFirst;
+        stringSimilarityUtil.findSimilarities(analysisDtoList, serviceEntityService);
 
-        for(int i = 0; i < listSize; i++){
-            firstAnalysisDto = analysisDtoList.get(i);
-            firstPassword = firstAnalysisDto.getPassword();
-            firstAnalysisDto.setStrong(passwordUtil.isPasswordStrong(firstPassword).isStrong());
+        analysisDtoList
+                .forEach(analysisDto -> analysisDto.setStrong(
+                        passwordUtil.isPasswordStrong(analysisDto.getPassword()).isStrong()
+                    )
+                );
 
-            for(int j = i + 1; j < listSize; j++){
-
-                secondAnalysisDto = analysisDtoList.get(j);
-                secondPassword = secondAnalysisDto.getPassword();
-
-                similarity = stringSimilarityUtil.calculateSimilarity(firstPassword, secondPassword);
-                if(similarity > 0.5){
-
-                    secondToFirst = SimilarPasswordDto.builder()
-                            .password(secondPassword)
-                            .serviceDomain(serviceEntityService.getDomainById(secondAnalysisDto.getServiceId()))
-                            .similarity(similarity)
-                            .serviceId(secondAnalysisDto.getServiceId())
-                            .build();
-
-                    firstToSecond = SimilarPasswordDto.builder()
-                            .password(firstPassword)
-                            .serviceDomain(serviceEntityService.getDomainById(firstAnalysisDto.getServiceId()))
-                            .similarity(similarity)
-                            .serviceId(firstAnalysisDto.getServiceId())
-                            .build();
-
-                    firstAnalysisDto.addSimilarPassword(secondToFirst);
-                    secondAnalysisDto.addSimilarPassword(firstToSecond);
-                }
-            }
-        }
 
         return analysisDtoList;
     }

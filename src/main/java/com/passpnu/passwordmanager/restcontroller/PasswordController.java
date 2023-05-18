@@ -1,4 +1,4 @@
-package com.passpnu.passwordmanager.controller;
+package com.passpnu.passwordmanager.restcontroller;
 
 import com.passpnu.passwordmanager.dto.AnalysisDto;
 import com.passpnu.passwordmanager.dto.password.GuestPasswordDto;
@@ -7,6 +7,7 @@ import com.passpnu.passwordmanager.dto.password.PasswordResponseDto;
 import com.passpnu.passwordmanager.dto.password.PasswordServiceIdDto;
 import com.passpnu.passwordmanager.exception.EncryptionException;
 import com.passpnu.passwordmanager.exception.PasswordServiceMappingException;
+import com.passpnu.passwordmanager.exception.ServiceOccupiedException;
 import com.passpnu.passwordmanager.service.PasswordEntityService;
 import com.passpnu.passwordmanager.util.PasswordTestAnswer;
 import lombok.AllArgsConstructor;
@@ -47,17 +48,17 @@ public class PasswordController {
     public PasswordResponseDto generateAndStorePassword(
             @AuthenticationPrincipal AuthUserDetailsDto userDetailsDto,
             @RequestBody PasswordServiceIdDto passwordServiceIdDto
-    ) throws NameNotFoundException, EncryptionException {
+    ) throws NameNotFoundException, EncryptionException, ServiceOccupiedException {
         return passwordEntityService.generateAndStorePassword(passwordServiceIdDto, userDetailsDto);
     }
 
     @PostMapping
     @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<String> storePassword(@AuthenticationPrincipal AuthUserDetailsDto userDetailsDto,
-                                                        @RequestBody PasswordServiceIdDto passwordRequest)
-            throws NameNotFoundException, EncryptionException {
+                                                        @RequestBody PasswordServiceIdDto passwordServiceIdDto)
+            throws NameNotFoundException, EncryptionException, ServiceOccupiedException {
 
-        passwordEntityService.savePassword(passwordRequest, userDetailsDto);
+        passwordEntityService.savePassword(passwordServiceIdDto, userDetailsDto);
         return new ResponseEntity<>("Password was stored", HttpStatus.OK);
     }
 

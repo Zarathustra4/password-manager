@@ -1,4 +1,4 @@
-package com.passpnu.passwordmanager.controller;
+package com.passpnu.passwordmanager.restcontroller;
 
 import com.passpnu.passwordmanager.dto.service.ServiceDto;
 import com.passpnu.passwordmanager.service.ServiceEntityService;
