@@ -18,4 +18,6 @@ public interface ServiceEntityService {
     ServiceDto getById(String id) throws NameNotFoundException;
 
     ServiceEntity getEntityById(Long id) throws NameNotFoundException;
+
+    String getDomainById(Long id) throws NameNotFoundException;
 }

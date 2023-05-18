@@ -1,4 +1,4 @@
-package com.passpnu.passwordmanager.controller;
+package com.passpnu.passwordmanager.restcontroller;
 
 import com.passpnu.passwordmanager.dto.service.ServiceDto;
 import com.passpnu.passwordmanager.service.ServiceEntityService;
@@ -46,7 +46,7 @@ public class ServiceController {
 
 
     @PostMapping
-    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('ROLE_USER')")
     public ResponseEntity<ServiceDto> postService(@RequestBody ServiceDto service){
         return new ResponseEntity<>(
                 serviceEntityService.postService(service),
