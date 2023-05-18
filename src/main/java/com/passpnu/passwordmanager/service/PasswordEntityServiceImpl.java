@@ -11,6 +11,7 @@ import com.passpnu.passwordmanager.entity.ServiceEntity;
 
 import com.passpnu.passwordmanager.exception.EncryptionException;
 import com.passpnu.passwordmanager.exception.PasswordServiceMappingException;
+import com.passpnu.passwordmanager.exception.ServiceOccupiedException;
 import com.passpnu.passwordmanager.exception.UncheckedEncryptionException;
 import com.passpnu.passwordmanager.generator.StringPasswordGenerator;
 
@@ -42,7 +43,6 @@ public class PasswordEntityServiceImpl implements PasswordEntityService{
     private final PasswordEncryptor passwordEncryptor;
     private final StringPasswordGenerator passwordGenerator;
     private final PasswordRepository passwordRepository;
-    private final PasswordMapper passwordMapper;
     private final CustomPasswordMapper customPasswordMapper;
     private final UserEntityService userService;
     private final ServiceEntityService serviceEntityService;
@@ -80,7 +80,7 @@ public class PasswordEntityServiceImpl implements PasswordEntityService{
 
     @Override
     public void savePassword(PasswordServiceIdDto passwordServiceIdDto, AuthUserDetailsDto userDto)
-            throws NameNotFoundException, EncryptionException {
+            throws NameNotFoundException, EncryptionException, ServiceOccupiedException {
 
         String encodedPassword;
 
@@ -98,8 +98,7 @@ public class PasswordEntityServiceImpl implements PasswordEntityService{
 
 
         if(passwordRepository.existsByUserIdAndServiceId(userId, serviceId)){
-            //change to relevant exception
-            throw new NameNotFoundException(
+            throw new ServiceOccupiedException(
                     "There already exists the password for %s service"
                             .formatted(serviceEntity.getDomain())
             );
@@ -117,7 +116,7 @@ public class PasswordEntityServiceImpl implements PasswordEntityService{
 
     @Override
     public PasswordResponseDto generateAndStorePassword(PasswordServiceIdDto passwordServiceIdDto, AuthUserDetailsDto userDto)
-            throws NameNotFoundException, EncryptionException {
+            throws NameNotFoundException, EncryptionException, ServiceOccupiedException {
         Long userId = userDto.getId();
 
         Long serviceId = passwordServiceIdDto.getServiceId();
@@ -125,8 +124,8 @@ public class PasswordEntityServiceImpl implements PasswordEntityService{
 
 
         if(passwordRepository.existsByUserIdAndServiceId(userId, serviceId)){
-            //change to relevant exception
-            throw new NameNotFoundException(
+
+            throw new ServiceOccupiedException(
                     "There already exists the password for %s service"
                             .formatted(serviceEntity.getDomain())
             );
@@ -181,7 +180,6 @@ public class PasswordEntityServiceImpl implements PasswordEntityService{
         ServiceEntity serviceEntity = serviceEntityService.getEntityById(serviceId);
 
         if(!passwordRepository.existsByUserIdAndServiceId(userId, serviceId)){
-            //change to relevant exception
             throw new PasswordServiceMappingException(
                     "There is not such a password for %s service"
                             .formatted(serviceEntity.getDomain())
