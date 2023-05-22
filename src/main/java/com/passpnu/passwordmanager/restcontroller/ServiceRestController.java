@@ -21,7 +21,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/services")
 @AllArgsConstructor
-public class ServiceController {
+public class ServiceRestController {
     private final ServiceEntityService serviceEntityService;
 
     @GetMapping

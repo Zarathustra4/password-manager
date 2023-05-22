@@ -53,7 +53,6 @@ public class JwtFilter extends OncePerRequestFilter {
             AuthUserDetailsDto userDetails = AuthUserDetailsDto.builder()
                     .username(username)
                     .role(role)
-                    //.password(password)
                     .encryptionKey(encryptionKey)
                     .id(id)
                     .build();

@@ -70,7 +70,7 @@ public class StringSimilarityUtil {
                 secondPassword = secondAnalysisDto.getPassword();
 
                 similarity = calculateSimilarity(firstPassword, secondPassword);
-                if(similarity > 0.5){
+                if(similarity >= 0.5){
 
                     secondToFirst = SimilarPasswordDto.builder()
                             .password(secondPassword)
