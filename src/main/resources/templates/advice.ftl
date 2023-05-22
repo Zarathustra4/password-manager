@@ -1,5 +1,7 @@
 <#include "header.ftl">
-
+<head>
+    <title>Your password...</title>
+</head>
     <#if isStrong>
         <h3>The password is strong</h3>
     <#else>

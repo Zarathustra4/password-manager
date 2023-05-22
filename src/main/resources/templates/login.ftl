@@ -1,5 +1,7 @@
 <#include "header.ftl">
-
+<head>
+    <title>Log in</title>
+</head>
 <form action="/view/login" method="post">
     <div class="wrapper">
         <div class="form-group">

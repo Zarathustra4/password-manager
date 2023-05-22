@@ -28,7 +28,7 @@ public class AuthController {
         }
 
         userEntityService.saveUser(signUpUser);
-        return "redirect:/view/menu";
+        return "redirect:/view/login";
     }
 
     @GetMapping("/login")

@@ -1,4 +1,7 @@
 <#include "../user/authHeader.ftl">
+<head>
+    <title>Admin page</title>
+</head>
 
     <form action="/view/services/change" method="post">
         <input type="text" placeholder="Domain" class="form-control" name="domain" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">

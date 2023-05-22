@@ -17,7 +17,9 @@
         <h5>Store password</h5>
     </button>
 </form>
-
+<head>
+    <title>Menu</title>
+</head>
 <form action="/view/passwords/change" method="post">
     <input type="text" placeholder="Service Domain" class="form-control" name="serviceDomain" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">
     <input type="password" placeholder="Password" class="form-control" name="password" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-sm">

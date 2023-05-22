@@ -1,5 +1,7 @@
 <#include "header.ftl">
-
+    <head>
+        <title>Guest Page</title>
+    </head>
     <main>
         <form action="/view/guest/generate" method="get">
             <button class="btn btn-secondary" type="submit">

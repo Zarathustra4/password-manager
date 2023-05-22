@@ -1,4 +1,7 @@
 <#include "header.ftl">
+<head>
+    <title>Error Page</title>
+</head>
 <h1>
     Error!
 </h1>

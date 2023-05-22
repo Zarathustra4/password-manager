@@ -1,4 +1,7 @@
 <#include "authHeader.ftl">
+<head>
+    <title>Response Page</title>
+</head>
 
     <h3>${response}</h3>
 

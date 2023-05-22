@@ -1,4 +1,7 @@
 <#include "authHeader.ftl">
+<head>
+    <title>Services</title>
+</head>
 
     <#list serviceList as service>
         <div class="service">
