@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/admin")
 @AllArgsConstructor
-public class AdminController {
+public class AdminRestController {
     private UserEntityService userEntityService;
 
     @PostMapping

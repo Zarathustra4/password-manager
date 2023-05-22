@@ -34,7 +34,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/passwords")
 @AllArgsConstructor
-public class PasswordController {
+public class PasswordRestController {
 
     private final PasswordEntityService passwordEntityService;
 

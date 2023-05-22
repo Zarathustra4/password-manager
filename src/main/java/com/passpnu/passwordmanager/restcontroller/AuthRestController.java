@@ -12,9 +12,11 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,7 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @AllArgsConstructor
 @RestController
-public class AuthController {
+public class AuthRestController {
     private final UserEntityService userEntityService;
     private final UserDetailsService userDetailsService;
     private final AuthenticationManager authenticationManager;
@@ -60,4 +62,8 @@ public class AuthController {
         return AuthResponseDto.builder().token(jwt).build();
     }
 
+    @GetMapping("/user")
+    public AuthUserDetailsDto getUser(@AuthenticationPrincipal AuthUserDetailsDto user){
+        return user;
+    }
 }

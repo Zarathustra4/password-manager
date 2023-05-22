@@ -15,9 +15,13 @@ public interface ServiceEntityService {
 
     boolean existsByDomain(ServiceDto serviceDto);
 
+    boolean existsByDomain(String domain);
+
     ServiceDto getById(String id) throws NameNotFoundException;
 
     ServiceEntity getEntityById(Long id) throws NameNotFoundException;
 
     String getDomainById(Long id) throws NameNotFoundException;
+
+    Long getIdByDomain(String domain) throws NameNotFoundException;
 }

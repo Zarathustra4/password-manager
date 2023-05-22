@@ -18,6 +18,12 @@ public class ServiceEntityServiceImpl implements ServiceEntityService{
     private final ServiceMapper serviceMapper;
 
     @Override
+    public Long getIdByDomain(String domain) throws NameNotFoundException {
+        ServiceEntity entity = serviceRepository.findByDomain(domain);
+        return entity.getId();
+    }
+
+    @Override
     public ServiceEntity getEntityById(Long id) throws NameNotFoundException {
         return serviceRepository.findById(id).orElseThrow(() -> new NameNotFoundException("There is no such a service"));
     }
@@ -79,5 +85,10 @@ public class ServiceEntityServiceImpl implements ServiceEntityService{
     @Override
     public boolean existsByDomain(ServiceDto service){
         return serviceRepository.existsByDomain( service.getDomain() );
+    }
+
+    @Override
+    public boolean existsByDomain(String domain) {
+        return serviceRepository.existsByDomain(domain);
     }
 }
