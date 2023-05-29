@@ -18,17 +18,21 @@ import java.util.List;
 public interface PasswordEntityService {
     PasswordResponseDto generatePassword();
 
-    void savePassword(PasswordServiceIdDto passwordServiceIdDto, AuthUserDetailsDto userDto) throws NameNotFoundException, EncryptionException, ServiceOccupiedException;
+    void savePassword(PasswordServiceIdDto passwordServiceIdDto, AuthUserDetailsDto userDto)
+            throws NameNotFoundException, EncryptionException, ServiceOccupiedException;
 
     PasswordResponseDto getPassword(Long serviceId, AuthUserDetailsDto userDto) throws EncryptionException;
 
-    PasswordResponseDto generateAndStorePassword(PasswordServiceIdDto passwordServiceIdDto, AuthUserDetailsDto userDto) throws NameNotFoundException, EncryptionException, ServiceOccupiedException;
-    void changePassword(PasswordServiceIdDto passwordServiceIdDto, AuthUserDetailsDto userDto) throws NameNotFoundException, EncryptionException, PasswordServiceMappingException;
+    PasswordResponseDto generateAndStorePassword(PasswordServiceIdDto passwordServiceIdDto, AuthUserDetailsDto userDto)
+            throws NameNotFoundException, EncryptionException, ServiceOccupiedException;
+    void changePassword(PasswordServiceIdDto passwordServiceIdDto, AuthUserDetailsDto userDto)
+            throws NameNotFoundException, EncryptionException, PasswordServiceMappingException;
     void deletePassword(Long serviceId, AuthUserDetailsDto userDto);
 
     PasswordTestAnswer checkPasswordStrength(String password);
 
-    List<AnalysisDto> analyzeSystem(AuthUserDetailsDto authUserDetailsDto) throws EncryptionException, NameNotFoundException;
+    List<AnalysisDto> analyzeSystem(AuthUserDetailsDto authUserDetailsDto)
+            throws EncryptionException, NameNotFoundException;
 
     List<PasswordServiceIdDto> getPasswordList(AuthUserDetailsDto userDetailsDto);
 }

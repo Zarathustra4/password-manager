@@ -1,22 +1,22 @@
 spring:
   datasource:
-    username: ${DB_USERNAME:POSTGRES}
-    url: ${DB_URL:POSTGRES}
-    password: ${DB_PASSWORD:POSTGRES}
+    username: "postgres"
+    url: "jdbc:postgresql://localhost:5432/password-manager"
+    password: "password"
   sql:
     init:
       mode: always
   jpa:
     show-sql: false
   flyway:
-    user: ${DB_USERNAME:POSTGRES}
-    password: ${DB_PASSWORD:POSTGRES}
+    user: "postgres"
+    password: "password"
     schemas: public
     locations: db/migration
     baselineOnMigrate: true
   security:
     user:
-      password: ${USER_PASSWORD:user}
+      password: "password"
   freemarker:
     template-loader-path: "classpath:/templates"
     suffix: ".ftl"
@@ -27,5 +27,5 @@ springdoc:
       path: '/swagger-ui.html'
 
 
-jwt.secret: ${JWT_SECRET}
-jwt.expiration: ${JWT_EXPIRATION}
+jwt.secret: "SecretJWTKey123"
+jwt.expiration: 608500
