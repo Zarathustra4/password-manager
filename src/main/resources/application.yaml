@@ -1,25 +1,28 @@
 spring:
   datasource:
-    username: "postgres"
-    url: "jdbc:postgresql://localhost:5432/password-manager"
-    password: "password"
+    username: ${DB_USERNAME}
+    url: ${DB_URL}
+    password: ${DB_PASSWORD}
   sql:
     init:
       mode: always
   jpa:
     show-sql: false
+    hibernate:
+      ddl-auto: update
   flyway:
-    user: "postgres"
+    user: ${DB_USERNAME}
     password: "password"
     schemas: public
     locations: db/migration
     baselineOnMigrate: true
   security:
     user:
-      password: "password"
+      password: ${DB_PASSWORD}
   freemarker:
     template-loader-path: "classpath:/templates"
     suffix: ".ftl"
+
 springdoc:
   api-docs:
     path : '/api-docs'

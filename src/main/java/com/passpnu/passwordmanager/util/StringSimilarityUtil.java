@@ -43,7 +43,7 @@ public class StringSimilarityUtil {
 
         int consistentDistance = hammingDistance(smallerString, longerString);
         int reverseDistance = reverseHammingDistance(smallerString, longerString);
-        int totalDistance = (consistentDistance + reverseDistance ) / 2;
+        int totalDistance = (consistentDistance + reverseDistance) / 2;
 
         return (double) (smallerString.length() - totalDistance) / smallerString.length();
     }

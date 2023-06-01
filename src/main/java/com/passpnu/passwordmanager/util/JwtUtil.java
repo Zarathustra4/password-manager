@@ -4,7 +4,6 @@ import com.passpnu.passwordmanager.dto.user.AuthUserDetailsDto;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +18,7 @@ public class JwtUtil {
     private String SECRET_KEY = "SecretJWTKey123";
 
 //    @Value("${JWT_EXPIRATION}")
-    private int EXPIRATION = 608500;
+    private int EXPIRATION = 600000000;
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);

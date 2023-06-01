@@ -48,7 +48,6 @@ public class PasswordController {
     }
 
     @PreAuthorize("hasRole('ROLE_USER')")
-
     @GetMapping("/get-password")
     public String getPassword(
             @RequestParam String serviceDomain,
