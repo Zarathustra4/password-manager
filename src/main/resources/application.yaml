@@ -1,8 +1,8 @@
 spring:
   datasource:
-    username: ${DB_USERNAME}
-    url: ${DB_URL}
-    password: ${DB_PASSWORD}
+    username: ${DATABASE_USERNAME}
+    url: ${DATABASE_URL}
+    password: ${DATABASE_PASSWORD}
   sql:
     init:
       mode: always
@@ -11,14 +11,14 @@ spring:
     hibernate:
       ddl-auto: update
   flyway:
-    user: ${DB_USERNAME}
+    user: ${DATABASE_USERNAME}
     password: "password"
     schemas: public
     locations: db/migration
     baselineOnMigrate: true
   security:
     user:
-      password: ${DB_PASSWORD}
+      password: ${DATABASE_PASSWORD}
   freemarker:
     template-loader-path: "classpath:/templates"
     suffix: ".ftl"
